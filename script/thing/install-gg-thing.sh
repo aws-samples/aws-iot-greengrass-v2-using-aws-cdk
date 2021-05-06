@@ -1,26 +1,32 @@
-CONFIG_THING=$1
-CONFIG_CREDENTIAL=$2
+CONFIG_FILE=$1
 
-PROJECT_PREFIX=IotDataDev
+sudo apt-get install jq -y
+sudo python3 -m pip install awsiotsdk
+sudo pip3 install boto3
+sudo pip3 install python-dateutil
+sudo pip3 install apscheduler
+
+
+PROJECT_PREFIX=$(cat $CONFIG_FILE | jq -r '.ProjectPrefix')
 
 JQ_ARG='.["'$PROJECT_PREFIX'-IoTThingStack"].OutputThingNamePrefix'
-THING_NAME=$(cat $CONFIG_THING | jq -r $JQ_ARG) #ex>  
+THING_NAME=$(cat $CONFIG_FILE | jq -r $JQ_ARG) #ex>  
 
 JQ_ARG='.["'$PROJECT_PREFIX'-IoTThingStack"].OutputThingGroupName'
-THING_GROUP=$(cat $CONFIG_THING | jq -r $JQ_ARG) #ex>  
+THING_GROUP=$(cat $CONFIG_FILE | jq -r $JQ_ARG) #ex>  
 
 JQ_ARG='.["'$PROJECT_PREFIX'-IoTThingStack"].OutputProjectRegion'
-REGION=$(cat $CONFIG_THING | jq -r $JQ_ARG) #ex>  
+REGION=$(cat $CONFIG_FILE | jq -r $JQ_ARG) #ex>  
 
 JQ_ARG='.["'$PROJECT_PREFIX'-IoTThingStack"].OutputIoTTokenRole'
-ROLE_NAME=$(cat $CONFIG_THING | jq -r $JQ_ARG) #ex>  
+ROLE_NAME=$(cat $CONFIG_FILE | jq -r $JQ_ARG) #ex>  
 
 JQ_ARG='.["'$PROJECT_PREFIX'-IoTThingStack"].OutputIoTTokenRoleAlias'
-ROLE_ALIAS_NAME=$(cat $CONFIG_THING | jq -r $JQ_ARG) #ex>  
+ROLE_ALIAS_NAME=$(cat $CONFIG_FILE | jq -r $JQ_ARG) #ex>  
 
-AWS_ACCESS_KEY_ID=$(cat $CONFIG_CREDENTIAL | jq -r '.Credentials.AccessKeyId')
-AWS_SECRET_ACCESS_KEY=$(cat $CONFIG_CREDENTIAL | jq -r '.Credentials.SecretAccessKey')
-AWS_SESSION_TOKEN=$(cat $CONFIG_CREDENTIAL | jq -r '.Credentials.SessionToken')
+export AWS_ACCESS_KEY_ID=$(cat $CONFIG_FILE | jq -r '.Credentials.AccessKeyId')
+export AWS_SECRET_ACCESS_KEY=$(cat $CONFIG_FILE | jq -r '.Credentials.SecretAccessKey')
+export AWS_SESSION_TOKEN=$(cat $CONFIG_FILE | jq -r '.Credentials.SessionToken')
 
 DEV_ENV=true
 

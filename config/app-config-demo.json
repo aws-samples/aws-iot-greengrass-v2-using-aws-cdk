@@ -1,0 +1,80 @@
+{
+    "Project": {
+        "Name": "IotData",
+        "Stage": "Demo",
+        "Account": "75157*******",
+        "Region": "us-east-2",
+        "Profile": "cdk-demo"
+    },
+
+    "Stack": {
+        "IoTThing": {
+            "Name": "IoTThingStack",
+            
+            "ThingGroupName": "demo-dev",
+            "ThingNamePrefix": "ver01",
+
+            "TempCredential": {
+                "TempSetupRoleName": "InstallerTempRole"
+            }
+        },
+        "ThingMonitor": {
+            "Name": "ThingMonitorStack"
+            
+        },
+        "GreengrassUpload": {
+            "Name": "GreengrassUploadStack",
+
+            "BucketName": "gg-comp-upload",
+            "BucketPrefix": "deployment"            
+        },
+        "GreengrassComponent": {
+            "Name": "GreengrassComponentStack",
+
+            "SampleLogger": {
+                "Name": "sample-logger",
+                "Version": "0.1.7",
+                "CodePath": "codes/component/logger_sample"
+            }
+        },
+        "DataPipeline": {
+            "Name": "DataPipelineStack",
+
+            "IoTRuleEnable": true,
+            "IoTRuleTopic": "$aws/rules",
+            "IoTRuleTopic-Desc": "https://docs.aws.amazon.com/iot/latest/developerguide/iot-basic-ingest.html",
+            "IoTRuleNameFirehoseIngestion": "firehose_ingestion",
+
+            "DomainName": "iot-data",
+            "MasterUserName": "iotdataadmin",
+            "ESConditionAddress": [],
+            "ElasticsearchSelection": "DEVELOP",
+            "ElasticsearchCandidate": {
+                "DEVELOP": {
+                },
+                "CUSTOM": {
+                    "VolumeSize": 40,
+                    "AZCount": 3,
+                    "MasterNodeCount": 3,
+                    "MasterNodeType": "r5.large.elasticsearch",
+                    "DataNodeCount": 3,
+                    "DataNodeType": "r5.large.elasticsearch"
+                },
+                "LEGACY": {
+                    "DomainEndpoint": ""
+                }
+            }
+        },
+        "CicdPipeline": {
+            "Name": "CicdPipelineStack",
+
+            "RepositorySelection": "CodeCommit",
+            "RepositoryCandidate": {
+                "CodeCommit": {
+                    "RepositoryName": "iot-data-service",
+                    "BranchName": "master"
+                }
+            }
+        }
+    }
+}

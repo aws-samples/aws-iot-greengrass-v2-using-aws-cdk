@@ -1,9 +1,9 @@
 {
   "IotDataDemo-IoTThingStack": {
-    "OutputThingNamePrefix": "Ver01Dev-Ver01-undefined-undefined",
+    "OutputThingNamePrefix": "demo-dev-ver01",
     "OutputIoTTokenRoleAlias": "IotDataDemo-GreengrassV2TokenExchangeRoleAlias",
-    "OutputInstallerTempRoleARN": "arn:aws:iam::75157*******:role/IotDataDemo-InstallerTempRole",
-    "OutputThingGroupName": "Ver01Dev",
+    "OutputInstallerTempRoleARN": "arn:aws:iam::751571716296:role/IotDataDemo-InstallerTempRole",
+    "OutputThingGroupName": "demo-dev",
     "OutputIoTTokenRole": "IotDataDemo-GreengrassV2TokenExchangeRole",
     "OutputProjectRegion": "us-east-2",
     "OutputProjectPrefix": "IotDataDemo"

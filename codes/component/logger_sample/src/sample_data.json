@@ -1,9 +1,10 @@
 {
-    "DeviceID": "D102030",
+    "ThingName": "xxxxx",
     "MessageID": "fdsfdsfsdfsdfsdfdsfrrr",
     "Message": {
         "Type": "sensor-01",
         "Status": "on",
-        "Value": 23434
+        "Value": 0,
+        "Count": 0
     }
 }

@@ -38,22 +38,105 @@ The `cdk.json` file tells the CDK Toolkit how to execute your app.
 
 ### ***Set up deploy config***
 
-The `config/app-config.json` files tell how to configure deploy condition & stack condition. First of all, set the path of the configuration file through an environment variable.
+The `config/app-config-demo.json` files tell how to configure deploy condition & stack condition. First of all, set the path of the configuration file through an environment variable.
 
 ```bash
-export APP_CONFIG=config/app-config.json
+export APP_CONFIG=config/app-config-demo.json
 ```
 
 ### ***Install dependecies & Bootstrap***
 
 ```bash
-sh ./script/setup_initial.sh
+sh ./script/setup_initial.sh config/app-config-demo.json
 ```
 
-### ***Deploy stacks***
+### ***Pack IoT Greengrass components***
 
 ```bash
-sh ./script/deploy_stacks.sh
+sh ./script/pack_components.sh config/app-config-demo.json
+```
+
+Check whether ***zip*** directory is created in ***codes/component/logger_sample***.
+
+### ***Deploy stacks(1st provisioning: without Firehose to ES)***
+
+Before deployment, check whether all configurations are ready. Please execute the following command.
+
+```bash
+cdk list
+...
+...
+==> CDK App-Config File is config/app-config-demo.json, which is from Environment-Variable.
+==> Repository Selection:  CodeCommit
+IotDataDemo-CicdPipelineStack
+IotDataDemo-DataPipelineStack
+IotDataDemo-GreengrassComponentStack
+IotDataDemo-GreengrassUploadStack
+IotDataDemo-IoTThingStack
+IotDataDemo-ThingMonitorStack
+```
+
+Check if you can see the list of stacks as shown above.
+
+If there is no problem, finally run the following command.
+
+```bash
+sh ./script/deploy_stacks.sh config/app-config-demo.json
+```
+
+### ***Deploy stacks(2nd provisioning: with Firehose to ES)***
+
+For access Elasticsearch, we need to set up ***Role Mapping*** in Elasticsearch.
+
+First of all, log in Kibana, you can find ID/PW in ***SecreteManager*** like this.
+![secrete-manager](docs/asset/secrete-manager.png)
+
+And then, add backend role in Kibana-Security like this, your role arn looks like this.
+```arn:aws:iam::75157*******/IotDataDemo-Firehose2ESRole```
+
+![role-mapping](docs/asset/role-mapping.png)
+
+Enable a IoT rule option(***IoTRuleEnable***) in ***config/app-config-demo.json*** for Firehose-ES like this.
+
+```json
+...
+...
+    "DataPipeline": {
+        "Name": "DataPipelineStack",
+
+        "IoTRuleEnable": true, <----- enable this value
+        "IoTRuleTopic": "$aws/rules",
+        "IoTRuleTopic-Desc": "https://docs.aws.amazon.com/iot/latest/developerguide/iot-basic-ingest.html",
+        "IoTRuleNameFirehoseIngestion": "firehose_ingestion",
+
+        "DomainName": "iot-data",
+        "MasterUserName": "iotdataadmin",
+        "ESConditionAddress": [],
+        "ElasticsearchSelection": "DEVELOP",
+        "ElasticsearchCandidate": {
+            "DEVELOP": {
+            },
+            "CUSTOM": {
+                "VolumeSize": 40,
+                "AZCount": 3,
+                "MasterNodeCount": 3,
+                "MasterNodeType": "r5.large.elasticsearch",
+                "DataNodeCount": 3,
+                "DataNodeType": "r5.large.elasticsearch"
+            },
+            "LEGACY": {
+                "DomainEndpoint": ""
+            }
+        }
+    },
+...
+...
+```
+
+Finally run the following command.
+
+```bash
+sh ./script/deploy_stacks.sh config/app-config-demo.json
 ```
 
 ### ***Destroy stacks***
@@ -61,7 +144,7 @@ sh ./script/deploy_stacks.sh
 Execute the following command, which will destroy all resources except S3 Buckets and DynamoDB Tables. So destroy these resources in AWS web console manually.
 
 ```bash
-sh ./script/destroy_stacks.sh
+sh ./script/destroy_stacks.sh config/app-config-demo.json
 ```
 
 ### ***CDK Useful commands***
@@ -74,65 +157,88 @@ sh ./script/destroy_stacks.sh
 
 ## How to install thing
 
-### ***Prepare two xxx-config.json files for thing installer***
+### Generate `install-gg-config-[ProjectPrefix].json`
 
-Please prepare the following two config json files.
+Please prepare `install-gg-config-[ProjectPrefix]`.json file, where ***[ProjectPrefix]*** is "Project Name" + "Project Stage" in ***app-config-demo.json***. For example, ***IotDataDemo*** is [ProjectPrefix] in this default ***app-config-demo.json***.
 
 ```bash
-sh script/deploy_stacks.sh config/app-config.json # generated-> install-gg-config-thing-IotData-Demo.json
-sh script/thing/generate-temp-credential.sh config/app-config.json script/thing/install-gg-config-thing-IotData-Demo.json # generated-> install-gg-config-credential-IotData-Demo.json
+sh script/deploy_stacks.sh config/app-config-demo.json # generated-> script/thing/output-iot-thing-stack-[ProjectPrefix].json
+python3 script/thing/generate-install-gg-config.py -a config/app-config-demo.json -t script/thing/output-iot-thing-stack-[ProjectPrefix].json # generated-> script/thing/install-gg-config-[ProjectPrefix].json
 ```
 
-### ***Transfer these files into target devices***
+Check whether ***install-gg-config-[ProjectPrefix].json*** is created in ***script/thing*** directory.
 
-* script/thing/install-gg-config-credential-IotData-Demo.json
-* script/thing/install-gg-config-thing-IotData-Demo.json
-* script/thing/install-gg-thing.sh
+### Transfer a config file into target device and execute a script in target devices
 
 ![install-script](docs/asset/install-script.png)
 
-### ***Install Greengrass***
+* script/thing/install-gg-config-[ProjectPrefix].json
+* script/thing/install-gg-thing.sh
 
-1. Change a thing name in ***install-gg-config-thing-IotData-Demo.json***
+### Install Greengrass
+
+1. Update a unique thing name in ***install-gg-config-[ProjectPrefix].json***
 
 ```bash
 {
-  "IotDataDemo-IoTThingStack": {
-    "OutputThingNamePrefix": "Ver01-KO-0000", <---- Change this value
-    "OutputIoTTokenRoleAlias": "IotDataDemo-GreengrassV2TokenExchangeRoleAlias",
-    "OutputThingGroupName": "Ver01Dev",
-    "OutputIoTTokenRole": "IotDataDemo-GreengrassV2TokenExchangeRole",
-    "OutputProjectRegion": "ap-northeast-2",
-    "OutputProjectPrefix": "IotDataDemo",
-    "OutputInstallerTempRole": "IotDataDemo-InstallerTempRole"
-  }
+    "IotDataDemo-IoTThingStack": {
+        "OutputThingNamePrefix": "demo-dev-ver01-xxxxx", <--- append a extra & unique suffix thing name !!
+        "OutputIoTTokenRoleAlias": "IotDataDemo-GreengrassV2TokenExchangeRoleAlias",
+        "OutputInstallerTempRoleARN": "arn:aws:iam::75157*******:role/IotDataDemo-InstallerTempRole",
+        "OutputThingGroupName": "demo-dev",
+        "OutputIoTTokenRole": "IotDataDemo-GreengrassV2TokenExchangeRole",
+        "OutputProjectRegion": "us-east-2",
+        "OutputProjectPrefix": "IotDataDemo"
+    },
+    "Credentials": {
+        "AccessKeyId": "ASIA257JKJDEARSDWWIT",
+        "SecretAccessKey": "wiGuoJ/2pg5ue5TFJ6zF3f22wcq5b5dCyExDvYEY",
+        "SessionToken": "FwoGZXIvYXdzELn//////////wEaDDiSD0li77wnn+e1NiK/Ae7CoclJAt4dV0diah/AjCwUUeRf44dtGVWFw7ZQDkBj732rFTcc5/FLL3+GcEDlAw4VUso5tG6dI/JVwzWBWnKDk9UWF4QBnCVYxSp9Jpcup06eJ44NYhuMMA8KTSY+Ea9Kf2JAVvG4hVKGEteJwU+lC5tUkuhcLtKaAuTdxefc6jyH9qfmIJcUfjpeDNm9+3OHOhsQrTWE+4a4VYgTP5PR7w7ouWNktlE5X/1z3L+sQ7D8rmtcZdgLef4h3+E2KMOQ0IQGMi2UR6B/e4Pj4ybeLdXk62+p3alCLzPNWo/Nh2N9nbak9FTb2TRk70WiFGT5jJ0=",
+        "Expiration": "2021-05-06 16:16:19+00:00"
+    },
+    "ProjectPrefix": "IotDataDemo"
 }
 ```
 
 2. Run the following commands
 
 ```bash
-sudo apt-get install jq
-sudo python3 -m pip install awsiotsdk
-sudo pip3 install boto3 # optional
-sudo sh ./install-gg-thing.sh install-gg-config-thing-IotData-Demo.json install-gg-config-credential-IotData-Demo.json
+sudo sh ./install-gg-thing.sh install-gg-config-[ProjectPrefix].json
 ```
 
-### ***Check greengrass system-service***
+Result of install-script
+![result-install-script](docs/asset/result-install-script.png)
+
+Result of Greengrass-deployment
+![result-deployment](docs/asset/result-deployment.png)
+
+### Check greengrass system-service
 
 ```bash
 sudo systemctl status greengrass
 ```
 
-### ***Check greengass log***
+Result of Greengrass-service
+![result-service-status](docs/asset/result-service-status.png)
+
+### Check greengass log
 
 ```bash
-sudo tail -f /greengrass/v2/log/greengrass.log
-sudo tail -f /greengrass/v2/log/com.xxx.xxx.xxx.log
+sudo tail -f /greengrass/v2/logs/greengrass.log
+sudo tail -f /greengrass/v2/logs/com.xxx.xxx.xxx.log
 ```
 
-## How to collect data
+Result of Greengrass-log
+![result-tail-log](docs/asset/result-tail-log.png)
 
-A Lambda-based Greengrass component is provided with Greengrass's deployments. Please update lambda(in `codes/lambda/comp_logger_sample`) to customize your logging logic.
+## How to update data-collector lambda
 
-After updating your logic, jut git push the changes! And then CICD pipeline will automatically deploy that through CodePipeline & Greengrass deployments.
+A Greengrass component is provided with Greengrass's deployments. Please update component code(in `codes/component/logger_sample`) to customize your logging logic.
+
+Note that when code changes are made, be sure to increase component's version in ***config/app-config-demo.json*** and then re-create the zip file in ***codes/component/logger_sample/zip*** using the following command.
+
+```bash
+sh ./script/pack_components.sh config/app-config-demo.json
+```
+
+After updating your logic, just git push the changes! And then CICD pipeline will automatically deploy that through CodePipeline & Greengrass deployments.

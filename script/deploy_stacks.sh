@@ -19,8 +19,9 @@ echo .
 echo .
 
 echo ==--------DeployStacksStepByStep---------==
-cdk deploy *-IoTThingStack --require-approval never --profile $PROFILE_NAME --outputs-file ./script/thing/install-gg-config-thing-$PROJECT_NAME-$PROJECT_STAGE.json
+cdk deploy *-IoTThingStack --require-approval never --profile $PROFILE_NAME --outputs-file ./script/thing/output-iot-thing-stack-$PROJECT_NAME$PROJECT_STAGE.json
 cdk deploy *-ThingMonitorStack --require-approval never --profile $PROFILE_NAME
+cdk deploy *-GreengrassUploadStack --require-approval never --profile $PROFILE_NAME
 cdk deploy *-GreengrassComponentStack --require-approval never --profile $PROFILE_NAME
 cdk deploy *-DataPipelineStack --require-approval never --profile $PROFILE_NAME
 cdk deploy *-CicdPipelineStack --require-approval never --profile $PROFILE_NAME

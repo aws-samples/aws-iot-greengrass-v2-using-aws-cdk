@@ -11,7 +11,7 @@ export class IoTThingStack extends base.BaseStack {
     constructor(appContext: AppContext, stackConfig: any) {
         super(appContext, stackConfig);
 
-        this.exportOutput('ThingNamePrefix', `${this.stackConfig.ThingGroupName}-${this.stackConfig.ThingNamePrefix}-${this.stackConfig.ThingPostCode}-${this.stackConfig.ThingShopCode}`);
+        this.exportOutput('ThingNamePrefix', `${this.stackConfig.ThingGroupName}-${this.stackConfig.ThingNamePrefix}`);
         this.exportOutput('ThingGroupName', this.stackConfig.ThingGroupName);
         this.exportOutput('ProjectPrefix', this.projectPrefix);
         this.exportOutput('ProjectRegion', this.region);
@@ -64,19 +64,11 @@ export class IoTThingStack extends base.BaseStack {
     }
 
     private createCredential() {
-        const selection = this.stackConfig.CredentialSelection;
-
         const thingProvisionPolicyStatement = this.createThingInstallerProvisionPolicy();
         const thingDevEnvPolicyStatement = this.createThingInstallerDevEnvPolicy();
 
-        if (selection === 'UserCredential') {
-            const iamUserName = this.stackConfig.CredentialCases[selection].ThingSetupUserName;
-            const installerGroup = this.createThingInstallerIamGroup(thingProvisionPolicyStatement, thingDevEnvPolicyStatement);
-            this.addThingInstallerIamUser(installerGroup, iamUserName);
-        } else if (selection === 'TempCredential') {
-            const tempRoleName = this.stackConfig.CredentialCases[selection].TempSetupRoleName;
-            this.createInstallerTempRole(thingProvisionPolicyStatement, thingDevEnvPolicyStatement, tempRoleName);
-        }
+        const tempRoleName = this.stackConfig.TempCredential.TempSetupRoleName;
+        this.createInstallerTempRole(thingProvisionPolicyStatement, thingDevEnvPolicyStatement, tempRoleName);
     }
 
     // https://docs.aws.amazon.com/greengrass/v2/developerguide/provision-minimal-iam-policy.html
@@ -247,12 +239,11 @@ export class IoTThingStack extends base.BaseStack {
             resources: ['*']
         }));
 
-        const lambdaTimeout:number = Number(this.stackConfig.LambdaTimeout);
         const func = new lambda.Function(this, lambdaBaseName, {
             functionName: `${lambdaName}Function`,
             code: lambda.Code.fromAsset('./codes/lambda/custom_iot_role_alias/src'),
             handler: 'handler.handle',
-            timeout: cdk.Duration.seconds(lambdaTimeout),
+            timeout: cdk.Duration.seconds(60),
             runtime: lambda.Runtime.PYTHON_3_6,
             role: lambdaRole,
         });
