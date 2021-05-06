@@ -1,0 +1,9 @@
+{
+    "DeviceID": "D102030",
+    "MessageID": "fdsfdsfsdfsdfsdfdsfrrr",
+    "Message": {
+        "Type": "sensor-01",
+        "Status": "on",
+        "Value": 23434
+    }
+}

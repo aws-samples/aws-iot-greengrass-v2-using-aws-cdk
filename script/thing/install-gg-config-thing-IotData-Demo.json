@@ -1,0 +1,11 @@
+{
+  "IotDataDemo-IoTThingStack": {
+    "OutputThingNamePrefix": "Ver01Dev-Ver01-undefined-undefined",
+    "OutputIoTTokenRoleAlias": "IotDataDemo-GreengrassV2TokenExchangeRoleAlias",
+    "OutputInstallerTempRoleARN": "arn:aws:iam::75157*******:role/IotDataDemo-InstallerTempRole",
+    "OutputThingGroupName": "Ver01Dev",
+    "OutputIoTTokenRole": "IotDataDemo-GreengrassV2TokenExchangeRole",
+    "OutputProjectRegion": "us-east-2",
+    "OutputProjectPrefix": "IotDataDemo"
+  }
+}
