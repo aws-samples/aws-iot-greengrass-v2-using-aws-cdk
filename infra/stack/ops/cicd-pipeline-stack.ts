@@ -142,6 +142,8 @@ export class CicdPipelineStack extends base.BaseStack {
             "greengrass:*",
             "es:*",
             "ses:*",
+            "ddb:*",
+            "firehose:*",
             "sns:*",
             "logs:*",
             "cloudwatch:*",
