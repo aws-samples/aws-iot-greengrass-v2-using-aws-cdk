@@ -7,8 +7,8 @@ PROJECT_NAME=$(cat $APP_CONFIG | jq -r '.Project.Name') #ex> IoTData
 PROJECT_STAGE=$(cat $APP_CONFIG | jq -r '.Project.Stage') #ex> Dev
 PROJECT_PREFIX=$PROJECT_NAME$PROJECT_STAGE
 
-SAMPLE_LOGGER_NAME=$(cat $APP_CONFIG | jq -r '.Stack.GreengrassComponent.SampleLogger.Name') 
-SAMPLE_LOGGER_PATH=$(cat $APP_CONFIG | jq -r '.Stack.GreengrassComponent.SampleLogger.CodePath') 
+SAMPLE_LOGGER_NAME=$(cat $APP_CONFIG | jq -r '.Stack.ComponentDeployment.SampleLogger.Name') 
+SAMPLE_LOGGER_PATH=$(cat $APP_CONFIG | jq -r '.Stack.ComponentDeployment.SampleLogger.CodePath') 
 
 
 echo ==-------SampleLoggerComponent---------==

@@ -40,7 +40,7 @@ export class SampleLoggerComponent extends base.BaseConstruct {
 
     private createRecipe(bucket: s3.IBucket, compConfig: any, ruleTopic: string): any {
         const compVersion = compConfig['Version'];
-        const bucketKey = this.commonProps.appConfig.Stack.GreengrassUpload.BucketPrefix;
+        const bucketKey = this.commonProps.appConfig.Stack.ComponentUpload.BucketPrefix;
 
         const recipe: any = {
             "RecipeFormatVersion": "2020-01-25",

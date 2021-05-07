@@ -6,7 +6,7 @@ import * as cr from '@aws-cdk/custom-resources';
 import * as base from '../../../lib/template/stack/base/base-stack';
 import { AppContext } from '../../../lib/template/app-context';
 
-export class IoTThingStack extends base.BaseStack {
+export class ThingInstallerStack extends base.BaseStack {
 
     constructor(appContext: AppContext, stackConfig: any) {
         super(appContext, stackConfig);
@@ -18,11 +18,11 @@ export class IoTThingStack extends base.BaseStack {
 
         this.createCredential();
 
-        this.createIoTThingGroup(this.stackConfig.ThingGroupName);
+        this.createThingInstallerGroup(this.stackConfig.ThingGroupName);
         this.createIoTRoleAlias('GreengrassV2TokenExchangeRole', this.account);
     }
 
-    private createIoTThingGroup(groupName: string) {
+    private createThingInstallerGroup(groupName: string) {
         const lambdaBaseName: string = 'create-iot-thing-group';
         const lambdaName: string = `${this.projectPrefix}-${lambdaBaseName}`;
 

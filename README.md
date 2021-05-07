@@ -1,19 +1,20 @@
 # AWS IoT Greengrass OnBoarding and Data Logging using AWS CDK
 
-This repository provides an example case for collecing devices's data through AWS IoT Greengrass2.0-based devices. All necessary cloud resources are created and distributed through AWS CDK.
+This repository provides an reference solution for collecting thing-generated data through AWS IoT Greengrass ver2-based devices. All necessary cloud resources are modeled and deployed through AWS CDK.
 
 ## Solution Architecture
 
-- Thing OnBoarding: Greengrass2.0 Installer with a customized IAM Role
-- Thing Monitoring: IoT Core's Thing Event -> IoT Rule -> DynamoDB 
-- Data Ingestion: Thing Logger Lambda -> IoT Rule -> S3
-- CICD Pipeline: Thing Logger Lambda -> Greengrass Components -> Greengrass Deployments
+- Thing Installer: provide Greengrass ver2 Installer with a customized IAM Role(outout-thing-installer-stack-IotDataDemo.json)
+- Thing Monitor: observe IoT thing lifecycle events(created, deleted, updated)
+- Component Upload/Deployments: deploy component's logic(sample logger)
+- Data Pipeline: ingest & monitor thing's realtime data(Sample Logger component -> IoT Rule -> Kinesis Firehose -> Elasticsearch -> Kibana)
+- CICD Pipeline: Continuous Integration & Continuous Deploy(Commit->Build->Deploy)
 
 ![solution-arcitecture](docs/asset/solution-architecture.png)
 
 ## CDK-Project Build & Deploy
 
-To efficiently define and provision serverless resources, [AWS Cloud Development Kit(CDK)](https://aws.amazon.com/cdk) which is an open source software development framework to define your cloud application resources using familiar programming languages is utilized .
+To efficiently define and provision aws cloud resources, [AWS Cloud Development Kit(CDK)](https://aws.amazon.com/cdk) which is an open source software development framework to define your cloud application resources using familiar programming languages is utilized.
 
 ![AWSCDKIntro](docs/asset/aws_cdk_intro.png)
 
@@ -23,7 +24,7 @@ Because this solusion is implemented in CDK, we can deploy these cloud resources
 
 ### **Prerequisites**
 
-First of all, AWS Account and IAM User is required. And then the following must be installed.
+First of all, AWS Account and IAM User is required. And then the following modules must be installed.
 
 - AWS CLI: aws configure --profile [profile name]
 - Node.js: node --version
@@ -32,13 +33,48 @@ First of all, AWS Account and IAM User is required. And then the following must 
 
 Please refer to the kind guide in [CDK Workshop](https://cdkworkshop.com/15-prerequisites.html).
 
+### ***Configure AWS Credential***
+
+```bash
+aws configure --profile [your-profile] 
+AWS Access Key ID [None]: xxxxxx
+AWS Secret Access Key [None]:yyyyyyyyyyyyyyyyyyyyyyyyyyyyyy
+Default region name [None]: us-east-2 
+Default output format [None]: json
+    
+aws sts get-caller-identity --profile [your-profile]
+...
+...
+{
+    "UserId": ".............",
+    "Account": "75157*******",
+    "Arn": "arn:aws:iam::75157*******:user/[your IAM User ID]"
+}
+```
+
 ### ***Check cdk project's default launch config***
 
-The `cdk.json` file tells the CDK Toolkit how to execute your app.
+The `cdk.json` file tells CDK Toolkit how to execute your app.
 
 ### ***Set up deploy config***
 
-The `config/app-config-demo.json` files tell how to configure deploy condition & stack condition. First of all, set the path of the configuration file through an environment variable.
+The `config/app-config-demo.json` files tell how to configure deploy condition & stack condition. First of all, change project configurations(Account, Profile are essential) in ```config/app-config-demo.json```.
+
+```json
+{
+    "Project": {
+        "Name": "IotData",
+        "Stage": "Demo",
+        "Account": "75157*******",
+        "Region": "us-east-2",
+        "Profile": "cdk-demo"
+    },
+    ...
+    ...
+}
+```
+
+And then set the path of the configuration file through an environment variable.
 
 ```bash
 export APP_CONFIG=config/app-config-demo.json
@@ -56,7 +92,7 @@ sh ./script/setup_initial.sh config/app-config-demo.json
 sh ./script/pack_components.sh config/app-config-demo.json
 ```
 
-Check whether ***zip*** directory is created in ***codes/component/logger_sample***.
+Check whether ***zip*** directory and file are created in ***codes/component/logger_sample***.
 
 ### ***Deploy stacks(1st provisioning: without Firehose to ES)***
 
@@ -70,9 +106,9 @@ cdk list
 ==> Repository Selection:  CodeCommit
 IotDataDemo-CicdPipelineStack
 IotDataDemo-DataPipelineStack
-IotDataDemo-GreengrassComponentStack
-IotDataDemo-GreengrassUploadStack
-IotDataDemo-IoTThingStack
+IotDataDemo-ComponentDeploymentStack
+IotDataDemo-ComponentUploadStack
+IotDataDemo-ThingInstallerStack
 IotDataDemo-ThingMonitorStack
 ```
 
@@ -86,12 +122,12 @@ sh ./script/deploy_stacks.sh config/app-config-demo.json
 
 ### ***Deploy stacks(2nd provisioning: with Firehose to ES)***
 
-For access Elasticsearch, we need to set up ***Role Mapping*** in Elasticsearch.
+For access Elasticsearch, we need to set up ```Role Mapping``` in Elasticsearch(Kibana).
 
-First of all, log in Kibana, you can find ID/PW in ***SecreteManager*** like this.
+First of all log in Kibana, you can find ID/PW in ```SecreteManager``` like this.
 ![secrete-manager](docs/asset/secrete-manager.png)
 
-And then, add backend role in Kibana-Security like this, your role arn looks like this.
+And then, add ```backend role``` in Kibana-Security like this, your role arn looks like this.
 ```arn:aws:iam::75157*******/IotDataDemo-Firehose2ESRole```
 
 ![role-mapping](docs/asset/role-mapping.png)
@@ -139,6 +175,13 @@ Finally run the following command.
 sh ./script/deploy_stacks.sh config/app-config-demo.json
 ```
 
+You can check the deployment results as shown in the following picture.
+![cloudformation-stacks](docs/asset/cloudformation-stacks.png)
+
+You can also check that the rules are registered.
+![iot-rules](docs/asset/iot-rules.png)
+
+
 ### ***Destroy stacks***
 
 Execute the following command, which will destroy all resources except S3 Buckets and DynamoDB Tables. So destroy these resources in AWS web console manually.
@@ -162,18 +205,18 @@ sh ./script/destroy_stacks.sh config/app-config-demo.json
 Please prepare `install-gg-config-[ProjectPrefix]`.json file, where ***[ProjectPrefix]*** is "Project Name" + "Project Stage" in ***app-config-demo.json***. For example, ***IotDataDemo*** is [ProjectPrefix] in this default ***app-config-demo.json***.
 
 ```bash
-sh script/deploy_stacks.sh config/app-config-demo.json # generated-> script/thing/output-iot-thing-stack-[ProjectPrefix].json
-python3 script/thing/generate-install-gg-config.py -a config/app-config-demo.json -t script/thing/output-iot-thing-stack-[ProjectPrefix].json # generated-> script/thing/install-gg-config-[ProjectPrefix].json
+sh script/deploy_stacks.sh config/app-config-demo.json # generated-> script/thing/outout-thing-installer-stack-[ProjectPrefix].json
+python3 script/thing/generate-install-gg-config.py -a config/app-config-demo.json -t script/thing/outout-thing-installer-stack-[ProjectPrefix].json # generated-> script/thing/install-gg-config-[ProjectPrefix].json
 ```
+
+![install-script](docs/asset/install-script.png)
 
 Check whether ***install-gg-config-[ProjectPrefix].json*** is created in ***script/thing*** directory.
 
 ### Transfer a config file into target device and execute a script in target devices
 
-![install-script](docs/asset/install-script.png)
-
-* script/thing/install-gg-config-[ProjectPrefix].json
-* script/thing/install-gg-thing.sh
+* ```script/thing/install-gg-config-[ProjectPrefix].json```
+* ```script/thing/install-gg-thing.sh```
 
 ### Install Greengrass
 
@@ -181,11 +224,11 @@ Check whether ***install-gg-config-[ProjectPrefix].json*** is created in ***scri
 
 ```bash
 {
-    "IotDataDemo-IoTThingStack": {
-        "OutputThingNamePrefix": "demo-dev-ver01-xxxxx", <--- append a extra & unique suffix thing name !!
+    "IotDataDemo-ThingInstallerStack": {
+        "OutputThingNamePrefix": "demo-thing-ver01-001", <--- append a extra & unique suffix thing name !!
         "OutputIoTTokenRoleAlias": "IotDataDemo-GreengrassV2TokenExchangeRoleAlias",
         "OutputInstallerTempRoleARN": "arn:aws:iam::75157*******:role/IotDataDemo-InstallerTempRole",
-        "OutputThingGroupName": "demo-dev",
+        "OutputThingGroupName": "demo-thing",
         "OutputIoTTokenRole": "IotDataDemo-GreengrassV2TokenExchangeRole",
         "OutputProjectRegion": "us-east-2",
         "OutputProjectPrefix": "IotDataDemo"
@@ -209,8 +252,12 @@ sudo sh ./install-gg-thing.sh install-gg-config-[ProjectPrefix].json
 Result of install-script
 ![result-install-script](docs/asset/result-install-script.png)
 
+Result of Greengrass-installation
+![greengrass-installation](docs/asset/greengrass-installation.png)
+
 Result of Greengrass-deployment
-![result-deployment](docs/asset/result-deployment.png)
+![result-deployment1](docs/asset/result-deployment1.png)
+![result-deployment2](docs/asset/result-deployment2.png)
 
 ### Check greengrass system-service
 
@@ -229,16 +276,31 @@ sudo tail -f /greengrass/v2/logs/com.xxx.xxx.xxx.log
 ```
 
 Result of Greengrass-log
-![result-tail-log](docs/asset/result-tail-log.png)
+![result-greengrass-log](docs/asset/result-greengrass-log.png)
+![result-component-log](docs/asset/result-component-log.png)
+
+## How to check realtime data in Kibana
+
+First of all, register ```index pattern``` like this.
+![index-pattern](docs/asset/index-pattern.png)
+
+And then, check whether the new datas are uploaded like this.
+![log-discover](docs/asset/log-discover.png)
 
 ## How to update data-collector lambda
 
-A Greengrass component is provided with Greengrass's deployments. Please update component code(in `codes/component/logger_sample`) to customize your logging logic.
+A Greengrass component is deployed with Greengrass's deployments. Please update component code(in `codes/component/logger_sample`) to customize your logging logic.
 
-Note that when code changes are made, be sure to increase component's version in ***config/app-config-demo.json*** and then re-create the zip file in ***codes/component/logger_sample/zip*** using the following command.
+Note that when code changes are made, be sure to increase component's version in ```config/app-config-demo.json``` and then re-create the zip file in ```codes/component/logger_sample/zip``` using the following command.
 
 ```bash
 sh ./script/pack_components.sh config/app-config-demo.json
 ```
 
 After updating your logic, just git push the changes! And then CICD pipeline will automatically deploy that through CodePipeline & Greengrass deployments.
+
+Or you can directly deploy those in local-dev PC using AWS CDK CLI like this.
+
+```bash
+sh ./script/deploy_stacks.sh config/app-config-demo.json
+```

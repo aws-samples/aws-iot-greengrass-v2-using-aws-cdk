@@ -42,16 +42,21 @@ def publish_data(topic, message: str):
     
     future = operation.get_response()
     future.result(TIMEOUT)
-    
+
+
+def utc_time():
+    return datetime.datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3] + 'Z'
+
 
 def create_data(sample, count):
     sample['ThingName'] = _thing_name
     sample['MessageID'] = str(uuid.uuid1())
 
+    sample['@timestamp'] = utc_time()
     sample['FuncionVersion'] = _version
     
     sample['Message']['Count'] = count
-    sample['Message']['Value'] = datetime.datetime.now().second
+    sample['Message']['Value'] = datetime.datetime.utcnow().second
     
     message = json.dumps(sample)
     logger.info('--->create_data: data- {}'.format(message))

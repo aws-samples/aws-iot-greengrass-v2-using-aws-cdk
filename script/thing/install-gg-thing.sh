@@ -9,19 +9,19 @@ sudo pip3 install apscheduler
 
 PROJECT_PREFIX=$(cat $CONFIG_FILE | jq -r '.ProjectPrefix')
 
-JQ_ARG='.["'$PROJECT_PREFIX'-IoTThingStack"].OutputThingNamePrefix'
+JQ_ARG='.["'$PROJECT_PREFIX'-ThingInstallerStack"].OutputThingNamePrefix'
 THING_NAME=$(cat $CONFIG_FILE | jq -r $JQ_ARG) #ex>  
 
-JQ_ARG='.["'$PROJECT_PREFIX'-IoTThingStack"].OutputThingGroupName'
+JQ_ARG='.["'$PROJECT_PREFIX'-ThingInstallerStack"].OutputThingGroupName'
 THING_GROUP=$(cat $CONFIG_FILE | jq -r $JQ_ARG) #ex>  
 
-JQ_ARG='.["'$PROJECT_PREFIX'-IoTThingStack"].OutputProjectRegion'
+JQ_ARG='.["'$PROJECT_PREFIX'-ThingInstallerStack"].OutputProjectRegion'
 REGION=$(cat $CONFIG_FILE | jq -r $JQ_ARG) #ex>  
 
-JQ_ARG='.["'$PROJECT_PREFIX'-IoTThingStack"].OutputIoTTokenRole'
+JQ_ARG='.["'$PROJECT_PREFIX'-ThingInstallerStack"].OutputIoTTokenRole'
 ROLE_NAME=$(cat $CONFIG_FILE | jq -r $JQ_ARG) #ex>  
 
-JQ_ARG='.["'$PROJECT_PREFIX'-IoTThingStack"].OutputIoTTokenRoleAlias'
+JQ_ARG='.["'$PROJECT_PREFIX'-ThingInstallerStack"].OutputIoTTokenRoleAlias'
 ROLE_ALIAS_NAME=$(cat $CONFIG_FILE | jq -r $JQ_ARG) #ex>  
 
 export AWS_ACCESS_KEY_ID=$(cat $CONFIG_FILE | jq -r '.Credentials.AccessKeyId')

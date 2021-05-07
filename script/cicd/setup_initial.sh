@@ -1,36 +1,24 @@
 #!/bin/sh
 
 # Configuration File Path
-# CONFIG_INFRA=config/app-config.json
 CONFIG_INFRA=$1
 
-echo ==--------InstallDedendencies---------==
-npm install -g aws-cdk
-npm install -g typescript
 echo ==--------CheckDedendencies---------==
+# npm install -g aws-cdk
 aws --version
 npm --version
-tsc --version
 cdk --version
 jq --version
 
 ACCOUNT=$(cat $CONFIG_INFRA | jq -r '.Project.Account') #ex> 123456789123
 REGION=$(cat $CONFIG_INFRA | jq -r '.Project.Region') #ex> us-east-1
+PROFILE_NAME=$(cat $CONFIG_INFRA | jq -r '.Project.Profile') #ex> cdk-demo
 
 echo ==--------ConfigInfo---------==
 echo $CONFIG_INFRA
 echo $ACCOUNT
 echo $REGION
-cat $CONFIG_INFRA
-echo .
-echo .
-
-echo ==--------InstallLambdaLayerForES---------==
-BASE_DIR=codes/layer/python-http-request
-mkdir $BASE_DIR/python
-cd $BASE_DIR
-pip3 install -r requirements.txt --target ./python/
-cd ../../../..
+echo $PROFILE_NAME
 echo .
 echo .
 
@@ -40,6 +28,6 @@ echo .
 echo .
 
 echo ==--------BootstrapCDKEnvironment---------==
-cdk bootstrap aws://$ACCOUNT/$REGION
+cdk bootstrap aws://$ACCOUNT/$REGION --profile $PROFILE_NAME
 echo .
 echo .

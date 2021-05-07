@@ -19,9 +19,9 @@ echo .
 echo ==--------DestroyStacksStepByStep---------==
 cdk destroy *-CicdPipelineStack --force --profile $PROFILE_NAME
 cdk destroy *-DataPipelineStack --force --profile $PROFILE_NAME
-cdk destroy *-GreengrassComponentStack --force --profile $PROFILE_NAME
-cdk destroy *-GreengrassUploadStack --force --profile $PROFILE_NAME
+cdk destroy *-ComponentDeploymentStack --force --profile $PROFILE_NAME
+cdk destroy *-ComponentUploadStack --force --profile $PROFILE_NAME
 cdk destroy *-ThingMonitorStack --force --profile $PROFILE_NAME
-cdk destroy *-IoTThingStack --force --profile $PROFILE_NAME
+cdk destroy *-ThingInstallerStack --force --profile $PROFILE_NAME
 echo .
 echo .

@@ -8,11 +8,11 @@
     },
 
     "Stack": {
-        "IoTThing": {
-            "Name": "IoTThingStack",
+        "ThingInstaller": {
+            "Name": "ThingInstallerStack",
             
-            "ThingGroupName": "demo-dev",
-            "ThingNamePrefix": "ver01",
+            "ThingGroupName": "demo-thing",
+            "ThingNamePrefix": "ver01-",
 
             "TempCredential": {
                 "TempSetupRoleName": "InstallerTempRole"
@@ -22,25 +22,25 @@
             "Name": "ThingMonitorStack"
             
         },
-        "GreengrassUpload": {
-            "Name": "GreengrassUploadStack",
+        "ComponentUpload": {
+            "Name": "ComponentUploadStack",
 
             "BucketName": "gg-comp-upload",
             "BucketPrefix": "deployment"            
         },
-        "GreengrassComponent": {
-            "Name": "GreengrassComponentStack",
+        "ComponentDeployment": {
+            "Name": "ComponentDeploymentStack",
 
             "SampleLogger": {
                 "Name": "sample-logger",
-                "Version": "0.1.7",
+                "Version": "0.1.1",
                 "CodePath": "codes/component/logger_sample"
             }
         },
         "DataPipeline": {
             "Name": "DataPipelineStack",
 
-            "IoTRuleEnable": true,
+            "IoTRuleEnable": false,
             "IoTRuleTopic": "$aws/rules",
             "IoTRuleTopic-Desc": "https://docs.aws.amazon.com/iot/latest/developerguide/iot-basic-ingest.html",
             "IoTRuleNameFirehoseIngestion": "firehose_ingestion",

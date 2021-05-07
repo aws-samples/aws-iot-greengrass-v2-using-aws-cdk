@@ -17,11 +17,11 @@ phases:
       - echo ==--------ListStacks---------==
       - cdk list
       - echo ==--------StartDeploy---------==
+      - cdk deploy *-ThingInstallerStack --require-approval never
+      - cdk deploy *-ThingMonitorStack --require-approval never --outputs-file ./script/thing/install-gg-config-thing-$PROJECT_NAME-$PROJECT_STAGE.json
+      - cdk deploy *-ComponentUploadStack --require-approval never
+      - cdk deploy *-ComponentDeploymentStack --require-approval never
       - cdk deploy *-DataPipelineStack --require-approval never
-      - cdk deploy *-IoTThingStack --require-approval never --outputs-file ./script/thing/install-gg-config-thing-$PROJECT_NAME-$PROJECT_STAGE.json
-      - cdk deploy *-ThingMonitorStack --require-approval never
-      - cdk deploy *-GreengrassUploadStack --require-approval never
-      - cdk deploy *-GreengrassComponentStack --require-approval never
       - echo ==--------CompleteDeploy---------==
 
 artifacts:

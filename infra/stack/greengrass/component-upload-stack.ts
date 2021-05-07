@@ -5,7 +5,7 @@ import * as base from '../../../lib/template/stack/base/base-stack';
 import { AppContext } from '../../../lib/template/app-context';
 
 
-export class GreengrassUploadStack extends base.BaseStack {
+export class ComponentUploadStack extends base.BaseStack {
     private bucket: s3.Bucket;
     private bucketKey: string;
 
@@ -16,7 +16,7 @@ export class GreengrassUploadStack extends base.BaseStack {
         this.putParameter('gg-comp-upload-bucket-name', this.bucket.bucketName);
 
         this.bucketKey = this.stackConfig.BucketPrefix;
-        const componentConfig: any = this.commonProps.appConfig.Stack['GreengrassComponent']
+        const componentConfig: any = this.commonProps.appConfig.Stack['ComponentDeployment']
 
         this.uploadComponentToS3(componentConfig['SampleLogger']);
     }

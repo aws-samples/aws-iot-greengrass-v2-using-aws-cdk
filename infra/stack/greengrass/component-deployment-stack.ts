@@ -10,7 +10,7 @@ import { AppContext } from '../../../lib/template/app-context';
 import * as sample_logger from './components/sample-logger-componet-construct';
 
 
-export class GreengrassComponentStack extends base.BaseStack {
+export class ComponentDeploymentStack extends base.BaseStack {
     
     constructor(appContext: AppContext, stackConfig: any) {
         super(appContext, stackConfig);
@@ -36,7 +36,7 @@ export class GreengrassComponentStack extends base.BaseStack {
 
     private deployComponents(components: any) {
         const deplymentName = this.projectPrefix;
-        const thingGroupName = this.commonProps.appConfig.Stack.IoTThing.ThingGroupName;
+        const thingGroupName = this.commonProps.appConfig.Stack.ThingInstaller.ThingGroupName;
         const thingTargetArn = `arn:aws:iot:${this.region}:${this.account}:thinggroup/${thingGroupName}`
 
         const name = 'ComponentDeploymnet';

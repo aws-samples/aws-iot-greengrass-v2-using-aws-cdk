@@ -28,7 +28,7 @@ if __name__ == '__main__':
     profile_name = app['Project']['Profile']
     project_prefix = project_name + project_stage
 
-    role_arn = thing[project_prefix+'-IoTThingStack']['OutputInstallerTempRoleARN']
+    role_arn = thing[project_prefix+'-ThingInstallerStack']['OutputInstallerTempRoleARN']
     role_session_name = '{}-TempRoleSession'.format(project_prefix)
 
     target_file = 'script/thing/install-gg-config-{}.json'.format(project_prefix)
