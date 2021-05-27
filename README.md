@@ -2,6 +2,12 @@
 
 This repository provides an reference solution for collecting thing-generated data through AWS IoT Greengrass ver2-based devices. All necessary cloud resources are modeled and deployed through AWS CDK.
 
+Other "Using AWS CDK" series can be found in:
+
+- [AWS ECS DevOps Using AWS CDK](https://github.com/aws-samples/aws-ecs-devops-using-aws-cdk)
+- [Amazon SageMaker Model Serving using AWS CDK](https://github.com/aws-samples/amazon-sagemaker-model-serving-using-aws-cdk)
+- [AWS Serverless Using AWS CDK](https://github.com/aws-samples/aws-serverless-using-aws-cdk)
+
 ## Solution Architecture
 
 - Thing Installer: provide Greengrass ver2 Installer with a customized IAM Role(outout-thing-installer-stack-IotDataDemo.json)
