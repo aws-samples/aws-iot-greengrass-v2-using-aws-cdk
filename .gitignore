@@ -3,6 +3,9 @@
 *.d.ts
 node_modules
 
+# vsc
+**/.DS_Store
+
 # CDK asset staging directory
 .cdk.staging
 cdk.out
