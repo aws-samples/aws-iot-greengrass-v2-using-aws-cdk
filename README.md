@@ -285,6 +285,15 @@ Result of Greengrass-log
 ![result-greengrass-log](docs/asset/result-greengrass-log.png)
 ![result-component-log](docs/asset/result-component-log.png)
 
+### How to uninstall greengrass in the device
+
+```bash
+sudo systemctl stop greengrass.service && sudo systemctl disable greengrass.service
+sudo rm /etc/systemd/system/greengrass.service
+sudo systemctl daemon-reload && sudo systemctl reset-failed
+sudo rm -rf /greengrass
+```
+
 ## How to check realtime data in Kibana
 
 First of all, register ```index pattern``` like this.
