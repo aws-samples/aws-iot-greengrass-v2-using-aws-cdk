@@ -131,6 +131,7 @@ sh ./script/deploy_stacks.sh config/app-config-demo.json
 For access Elasticsearch, we need to set up ```Role Mapping``` in Elasticsearch(Kibana).
 
 First of all log in Kibana, you can find ID/PW in ```SecreteManager``` like this.
+
 ![secrete-manager](docs/asset/secrete-manager.png)
 
 And then, add ```backend role``` in Kibana-Security like this, your role arn looks like this.
@@ -182,11 +183,12 @@ sh ./script/deploy_stacks.sh config/app-config-demo.json
 ```
 
 You can check the deployment results as shown in the following picture.
+
 ![cloudformation-stacks](docs/asset/cloudformation-stacks.png)
 
 You can also check that the rules are registered.
-![iot-rules](docs/asset/iot-rules.png)
 
+![iot-rules](docs/asset/iot-rules.png)
 
 ### ***Destroy stacks***
 
@@ -198,11 +200,11 @@ sh ./script/destroy_stacks.sh config/app-config-demo.json
 
 ### ***CDK Useful commands***
 
-* `npm install`     install dependencies
-* `cdk list`        list up stacks
-* `cdk deploy`      deploy this stack to your default AWS account/region
-* `cdk diff`        compare deployed stack with current state
-* `cdk synth`       emits the synthesized CloudFormation template
+- `npm install`     install dependencies
+- `cdk list`        list up stacks
+- `cdk deploy`      deploy this stack to your default AWS account/region
+- `cdk diff`        compare deployed stack with current state
+- `cdk synth`       emits the synthesized CloudFormation template
 
 ## How to install thing
 
@@ -221,12 +223,12 @@ Check whether ***install-gg-config-[ProjectPrefix].json*** is created in ***scri
 
 ### Transfer a config file into target device and execute a script in target devices
 
-* ```script/thing/install-gg-config-[ProjectPrefix].json```
-* ```script/thing/install-gg-thing.sh```
+- ```script/thing/install-gg-config-[ProjectPrefix].json```
+- ```script/thing/install-gg-thing.sh```
 
 ### Install Greengrass
 
-1. Update a unique thing name in ***install-gg-config-[ProjectPrefix].json***
+#### 1. Update a unique thing name in ***install-gg-config-[ProjectPrefix].json***
 
 ```bash
 {
@@ -249,20 +251,24 @@ Check whether ***install-gg-config-[ProjectPrefix].json*** is created in ***scri
 }
 ```
 
-2. Run the following commands
+#### 2. Run the following commands
 
 ```bash
 sudo sh ./install-gg-thing.sh install-gg-config-[ProjectPrefix].json
 ```
 
 Result of install-script
+
 ![result-install-script](docs/asset/result-install-script.png)
 
 Result of Greengrass-installation
+
 ![greengrass-installation](docs/asset/greengrass-installation.png)
 
 Result of Greengrass-deployment
+
 ![result-deployment1](docs/asset/result-deployment1.png)
+
 ![result-deployment2](docs/asset/result-deployment2.png)
 
 ### Check greengrass system-service
@@ -272,6 +278,7 @@ sudo systemctl status greengrass
 ```
 
 Result of Greengrass-service
+
 ![result-service-status](docs/asset/result-service-status.png)
 
 ### Check greengass log
@@ -282,7 +289,9 @@ sudo tail -f /greengrass/v2/logs/com.xxx.xxx.xxx.log
 ```
 
 Result of Greengrass-log
+
 ![result-greengrass-log](docs/asset/result-greengrass-log.png)
+
 ![result-component-log](docs/asset/result-component-log.png)
 
 ### How to uninstall greengrass in the device
@@ -294,12 +303,35 @@ sudo systemctl daemon-reload && sudo systemctl reset-failed
 sudo rm -rf /greengrass
 ```
 
+### trouble shooting
+
+If you experience any of the following, re-deploy ComponentDeploymentStack after updating the component's version. This phenomenon occurs because the binary of the component is changed but the version is not changed.
+
+```log
+2022-04-08T09:58:17.381Z [INFO] (pool-2-thread-8) com.aws.greengrass.componentmanager.ComponentManager: prepare-package-start. {packageIdentifier=IotDataDemo-sample-logger-v0.1.1}
+2022-04-08T09:58:17.968Z [INFO] (pool-2-thread-8) com.aws.greengrass.tes.CredentialRequestHandler: Received IAM credentials that will be cached until 2022-04-08T10:53:17Z. {iotCredentialsPath=/role-aliases/IotDataDemo-GreengrassV2TokenExchangeRoleAlias/credentials}
+2022-04-08T09:58:18.512Z [INFO] (pool-2-thread-8) com.aws.greengrass.componentmanager.builtins.S3Downloader: download-artifact. task failed and will be retried. {task-attempt=1, componentIdentifier=IotDataDemo-sample-logger, artifactUri=s3://iotdatademo-gg-comp-upload-us-east-2-75157/deployment/IotDataDemo-sample-logger/0.1.1/IotDataDemo-sample-logger.zip}
+com.aws.greengrass.componentmanager.exceptions.ArtifactChecksumMismatchException: Integrity check for downloaded artifact failed. Probably due to file corruption.
+        at com.aws.greengrass.componentmanager.builtins.ArtifactDownloader.lambda$download$0(ArtifactDownloader.java:133)
+        at com.aws.greengrass.util.RetryUtils.runWithRetry(RetryUtils.java:50)
+        at com.aws.greengrass.componentmanager.builtins.ArtifactDownloader.download(ArtifactDownloader.java:121)
+        at com.aws.greengrass.componentmanager.ComponentManager.prepareArtifacts(ComponentManager.java:430)
+        at com.aws.greengrass.componentmanager.ComponentManager.preparePackage(ComponentManager.java:377)
+        at com.aws.greengrass.componentmanager.ComponentManager.lambda$preparePackages$1(ComponentManager.java:338)
+        at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+        at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1128)
+        at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628)
+        at java.base/java.lang.Thread.run(Thread.java:829)
+```
+
 ## How to check realtime data in Kibana
 
 First of all, register ```index pattern``` like this.
+
 ![index-pattern](docs/asset/index-pattern.png)
 
 And then, check whether the new datas are uploaded like this.
+
 ![log-discover](docs/asset/log-discover.png)
 
 ## How to update data-collector lambda

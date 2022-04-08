@@ -31,9 +31,30 @@
         "ComponentDeployment": {
             "Name": "ComponentDeploymentStack",
 
+            "PublicComponents": [
+                {
+                    "Name": "aws.greengrass.Nucleus",
+                    "Version": "2.5.5",
+                    "ConfigurationUpdate": {
+                    }
+                },
+                {
+                    "Name": "aws.greengrass.ShadowManager",
+                    "Version": "2.1.0",
+                    "configurationUpdate": {
+                        "synchronize":{
+                            "coreThing":{
+                              "classic": false
+                            }
+                        }
+                    },
+                    "DocsForDependencies": "https://docs.aws.amazon.com/greengrass/v2/developerguide/shadow-manager-component.html"
+                }
+            ],
+
             "SampleLogger": {
                 "Name": "sample-logger",
-                "Version": "0.1.1",
+                "Version": "0.1.2",
                 "CodePath": "codes/component/logger_sample"
             }
         },
