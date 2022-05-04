@@ -41,7 +41,7 @@
                 {
                     "Name": "aws.greengrass.ShadowManager",
                     "Version": "2.1.0",
-                    "configurationUpdate": {
+                    "ConfigurationUpdate": {
                         "synchronize":{
                             "coreThing":{
                               "classic": false
