@@ -242,9 +242,9 @@ Check whether ***install-gg-config-[ProjectPrefix].json*** is created in ***scri
         "OutputProjectPrefix": "IotDataDemo"
     },
     "Credentials": {
-        "AccessKeyId": "ASIA257JKJDEARSDWWIT",
-        "SecretAccessKey": "wiGuoJ/2pg5ue5TFJ6zF3f22wcq5b5dCyExDvYEY",
-        "SessionToken": "FwoGZXIvYXdzELn//////////wEaDDiSD0li77wnn+e1NiK/Ae7CoclJAt4dV0diah/AjCwUUeRf44dtGVWFw7ZQDkBj732rFTcc5/FLL3+GcEDlAw4VUso5tG6dI/JVwzWBWnKDk9UWF4QBnCVYxSp9Jpcup06eJ44NYhuMMA8KTSY+Ea9Kf2JAVvG4hVKGEteJwU+lC5tUkuhcLtKaAuTdxefc6jyH9qfmIJcUfjpeDNm9+3OHOhsQrTWE+4a4VYgTP5PR7w7ouWNktlE5X/1z3L+sQ7D8rmtcZdgLef4h3+E2KMOQ0IQGMi2UR6B/e4Pj4ybeLdXk62+p3alCLzPNWo/Nh2N9nbak9FTb2TRk70WiFGT5jJ0=",
+        "AccessKeyId": "xxxxxxxxxxx",
+        "SecretAccessKey": "xxxxxxxxxxxxxxxxxxxxxxxxx",
+        "SessionToken": "FwoGZXIvYXdzELn//////////xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
         "Expiration": "2021-05-06 16:16:19+00:00"
     },
     "ProjectPrefix": "IotDataDemo"
