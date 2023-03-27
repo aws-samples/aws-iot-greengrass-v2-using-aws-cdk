@@ -24,7 +24,7 @@ To efficiently define and provision aws cloud resources, [AWS Cloud Development 
 
 ![AWSCDKIntro](docs/asset/aws_cdk_intro.png)
 
-Because this solusion is implemented in CDK, we can deploy these cloud resources using CDK CLI. Among the various languages supported, this solution used typescript. Because the types of **typescript** are very strict, with the help of auto-completion, typescrip offers a very nice combination with AWS CDK.
+Because this solution is implemented in CDK, we can deploy these cloud resources using CDK CLI. Among the various languages supported, this solution used typescript. Because the types of **typescript** are very strict, with the help of auto-completion, typescrip offers a very nice combination with AWS CDK.
 
 ***Caution***: This solution contains not-free tier AWS services. So be careful about the possible costs.
 
