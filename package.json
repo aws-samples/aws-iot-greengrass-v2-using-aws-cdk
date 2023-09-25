@@ -1,5 +1,5 @@
 {
-  "name": "temp",
+  "name": "@aws-samples/aws-iot-greengrass-v2-using-aws-cdk",
   "version": "0.1.0",
   "bin": {
     "temp": "bin/temp.js"
