@@ -47,7 +47,7 @@ export class ThingInstallerStack extends base.BaseStack {
             code: lambda.Code.fromAsset('./codes/lambda/custom_iot_thing_group/src'),
             handler: 'handler.handle',
             timeout: cdk.Duration.seconds(120),
-            runtime: lambda.Runtime.PYTHON_3_6,
+            runtime: lambda.Runtime.PYTHON_3_9,
             role: lambdaRole,
         });
 
@@ -244,7 +244,7 @@ export class ThingInstallerStack extends base.BaseStack {
             code: lambda.Code.fromAsset('./codes/lambda/custom_iot_role_alias/src'),
             handler: 'handler.handle',
             timeout: cdk.Duration.seconds(60),
-            runtime: lambda.Runtime.PYTHON_3_6,
+            runtime: lambda.Runtime.PYTHON_3_9,
             role: lambdaRole,
         });
 

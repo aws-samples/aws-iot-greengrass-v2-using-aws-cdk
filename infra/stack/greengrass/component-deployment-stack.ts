@@ -86,7 +86,7 @@ export class ComponentDeploymentStack extends base.BaseStack {
             code: lambda.Code.fromAsset('./codes/lambda/custom_gg_comp_deploy/src'),
             handler: 'handler.handle',
             timeout: cdk.Duration.seconds(600),
-            runtime: lambda.Runtime.PYTHON_3_6,
+            runtime: lambda.Runtime.PYTHON_3_9,
             role: lambdaRole,
         });
 
