@@ -3,6 +3,9 @@
 # Configuration File Path
 CONFIG_INFRA=$1
 
+echo ==--------npm mirror config---------==
+npm config set registry https://registry.npmmirror.com/
+
 echo ==--------CheckDedendencies---------==
 # npm install -g aws-cdk
 aws --version
@@ -28,6 +31,7 @@ echo .
 echo .
 
 echo ==--------BootstrapCDKEnvironment---------==
+echo aws://$ACCOUNT/$REGION --profile $PROFILE_NAME
 cdk bootstrap aws://$ACCOUNT/$REGION --profile $PROFILE_NAME
 echo .
 echo .

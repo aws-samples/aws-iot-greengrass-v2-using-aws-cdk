@@ -1,100 +1,21 @@
 {
     "Project": {
         "Name": "IotData",
-        "Stage": "Demo",
-        "Account": "75157*******",
-        "Region": "us-east-2",
-        "Profile": "cdk-demo"
+        "Stage": "Raspi",
+        "Account": "079496119912",
+        "Region": "cn-northwest-1",
+        "Profile": "Conti-ResourceAdmin-079496119912"
     },
 
     "Stack": {
         "ThingInstaller": {
             "Name": "ThingInstallerStack",
             
-            "ThingGroupName": "demo-thing",
-            "ThingNamePrefix": "ver01-",
+            "ThingGroupName": "raspi-thing",
+            "ThingNamePrefix": "conti-",
 
             "TempCredential": {
-                "TempSetupRoleName": "InstallerTempRole"
-            }
-        },
-        "ThingMonitor": {
-            "Name": "ThingMonitorStack"
-            
-        },
-        "ComponentUpload": {
-            "Name": "ComponentUploadStack",
-
-            "BucketName": "gg-comp-upload",
-            "BucketPrefix": "deployment"            
-        },
-        "ComponentDeployment": {
-            "Name": "ComponentDeploymentStack",
-
-            "PublicComponents": [
-                {
-                    "Name": "aws.greengrass.Nucleus",
-                    "Version": "2.5.5",
-                    "ConfigurationUpdate": {
-                    }
-                },
-                {
-                    "Name": "aws.greengrass.ShadowManager",
-                    "Version": "2.1.0",
-                    "ConfigurationUpdate": {
-                        "synchronize":{
-                            "coreThing":{
-                              "classic": false
-                            }
-                        }
-                    },
-                    "DocsForDependencies": "https://docs.aws.amazon.com/greengrass/v2/developerguide/shadow-manager-component.html"
-                }
-            ],
-
-            "SampleLogger": {
-                "Name": "sample-logger",
-                "Version": "0.1.2",
-                "CodePath": "codes/component/logger_sample"
-            }
-        },
-        "DataPipeline": {
-            "Name": "DataPipelineStack",
-
-            "IoTRuleEnable": false,
-            "IoTRuleTopic": "$aws/rules",
-            "IoTRuleTopic-Desc": "https://docs.aws.amazon.com/iot/latest/developerguide/iot-basic-ingest.html",
-            "IoTRuleNameFirehoseIngestion": "firehose_ingestion",
-
-            "DomainName": "iot-data",
-            "MasterUserName": "iotdataadmin",
-            "ESConditionAddress": [],
-            "ElasticsearchSelection": "DEVELOP",
-            "ElasticsearchCandidate": {
-                "DEVELOP": {
-                },
-                "CUSTOM": {
-                    "VolumeSize": 40,
-                    "AZCount": 3,
-                    "MasterNodeCount": 3,
-                    "MasterNodeType": "r5.large.elasticsearch",
-                    "DataNodeCount": 3,
-                    "DataNodeType": "r5.large.elasticsearch"
-                },
-                "LEGACY": {
-                    "DomainEndpoint": ""
-                }
-            }
-        },
-        "CicdPipeline": {
-            "Name": "CicdPipelineStack",
-
-            "RepositorySelection": "CodeCommit",
-            "RepositoryCandidate": {
-                "CodeCommit": {
-                    "RepositoryName": "iot-data-service",
-                    "BranchName": "master"
-                }
+                "TempSetupRoleName": "RaspiInstallerTempRole"
             }
         }
     }
